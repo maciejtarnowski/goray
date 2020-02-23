@@ -87,7 +87,7 @@ func (t *Tuple) Normalize() *Tuple {
 }
 
 func (t *Tuple) Dot(other *Tuple) float64 {
-	return t.X*other.X+t.Y*other.Y+t.Z*other.Z+t.W*other.W
+	return t.X*other.X + t.Y*other.Y + t.Z*other.Z + t.W*other.W
 }
 
 func (t *Tuple) Cross(other *Tuple) *Tuple {
