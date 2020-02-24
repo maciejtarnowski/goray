@@ -28,6 +28,14 @@ func (c *Color) Multiply(other *Color) *Color {
 	return NewColor(c.Red*other.Red, c.Green*other.Green, c.Blue*other.Blue)
 }
 
+func (c *Color) Clone() *Color {
+	return NewColor(c.Red, c.Green, c.Blue)
+}
+
+func (c *Color) ToRGB() [3]int {
+	return [3]int{utils.Float64ToUint(c.Red, 255), utils.Float64ToUint(c.Green, 255), utils.Float64ToUint(c.Blue, 255)}
+}
+
 func NewColor(red, green, blue float64) *Color {
 	return &Color{Red: red, Green: green, Blue: blue}
 }
