@@ -5,6 +5,10 @@ import (
 	"goray/utils"
 )
 
+func calcIndex(cols, x, y int) int {
+	return x*cols + y
+}
+
 type Matrix struct {
 	Rows     int
 	Cols     int
@@ -12,7 +16,7 @@ type Matrix struct {
 }
 
 func (m *Matrix) At(row, col int) float64 {
-	return m.Elements[row*m.Cols+col]
+	return m.Elements[calcIndex(m.Cols, row, col)]
 }
 
 func (m *Matrix) Equals(other *Matrix) bool {
@@ -33,7 +37,7 @@ func (m *Matrix) MultiplyMatrix(other *Matrix) *Matrix {
 	productElements := make([]float64, 16)
 	for row := 0; row < 4; row++ {
 		for col := 0; col < 4; col++ {
-			productElements[row*m.Cols+col] = m.At(row, 0)*other.At(0, col) +
+			productElements[calcIndex(m.Cols, row, col)] = m.At(row, 0)*other.At(0, col) +
 				m.At(row, 1)*other.At(1, col) +
 				m.At(row, 2)*other.At(2, col) +
 				m.At(row, 3)*other.At(3, col)
@@ -59,11 +63,66 @@ func (m *Matrix) Transpose() *Matrix {
 	productElements := make([]float64, 16)
 	for row := 0; row < m.Rows; row++ {
 		for col := 0; col < m.Cols; col++ {
-			productElements[col*m.Cols+row] = m.At(row, col)
+			productElements[calcIndex(m.Cols, col, row)] = m.At(row, col)
 		}
 	}
 
 	return NewMatrix(m.Rows, m.Cols, productElements...)
+}
+
+func (m *Matrix) Determinant() float64 {
+	det := float64(0)
+
+	if m.Cols == 2 && m.Rows == 2 {
+		det = m.At(0, 0)*m.At(1, 1) - m.At(0, 1)*m.At(1, 0)
+	}
+	if m.Cols > 2 || m.Rows > 2 {
+		for col := 0; col < m.Cols; col++ {
+			det += m.At(0, col) * m.Cofactor(0, col)
+		}
+	}
+	return det
+}
+
+func (m *Matrix) Submatrix(excludedRow, excludedCol int) *Matrix {
+	productElements := make([]float64, (m.Cols-1)*(m.Rows-1))
+	for row := 0; row < m.Rows; row++ {
+		if row == excludedRow {
+			continue
+		}
+
+		for col := 0; col < m.Cols; col++ {
+			if col == excludedCol {
+				continue
+			}
+
+			targetRow := row
+			if row > excludedRow {
+				targetRow = row - 1
+			}
+			targetCol := col
+			if col > excludedCol {
+				targetCol = col - 1
+			}
+
+			productElements[calcIndex(m.Cols-1, targetRow, targetCol)] = m.At(row, col)
+		}
+	}
+
+	return NewMatrix(m.Rows-1, m.Cols-1, productElements...)
+}
+
+func (m *Matrix) Minor(row, column int) float64 {
+	return m.Submatrix(row, column).Determinant()
+}
+
+func (m *Matrix) Cofactor(row, column int) float64 {
+	minor := m.Minor(row, column)
+
+	if row+column%2 == 0 {
+		return minor
+	}
+	return -minor
 }
 
 func NewMatrix(rows, cols int, elements ...float64) *Matrix {

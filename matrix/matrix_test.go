@@ -2,6 +2,7 @@ package matrix
 
 import (
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"goray/tuple"
 	"testing"
 )
@@ -102,4 +103,62 @@ func TestTransposingIdentityMatrix(t *testing.T) {
 	expected := NewIdentityMatrix4x4()
 
 	assert.True(t, matrix.Transpose().Equals(expected))
+}
+
+func TestDeterminantOf2x2Matrix(t *testing.T) {
+	matrix := NewMatrix(2, 2, 1, 5, -3, 2)
+
+	assert.InDelta(t, 17, matrix.Determinant(), 0.00001)
+}
+
+func TestSubmatrixOf3x3Matrix(t *testing.T) {
+	matrix := NewMatrix(3, 3, 1, 5, 0, -3, 2, 7, 0, 6, -3)
+
+	expected := NewMatrix(2, 2, -3, 2, 0, 6)
+
+	assert.True(t, matrix.Submatrix(0, 2).Equals(expected))
+}
+
+func TestSubmatrixOf4x4Matrix(t *testing.T) {
+	matrix := NewMatrix(4, 4, -6, 1, 1, 6, -8, 5, 8, 6, -1, 0, 8, 2, -7, 1, -1, 1)
+
+	expected := NewMatrix(3, 3, -6, 1, 6, -8, 8, 6, -7, -1, 1)
+
+	assert.True(t, matrix.Submatrix(2, 1).Equals(expected))
+}
+
+func TestMinorOf3x3Matrix(t *testing.T) {
+	matrix1 := NewMatrix(3, 3, 3, 5, 0, 2, -1, -7, 6, -1, 5)
+	matrix2 := matrix1.Submatrix(1, 0)
+
+	require.InDelta(t, 25, matrix2.Determinant(), 0.00001)
+	assert.InDelta(t, 25, matrix1.Minor(1, 0), 0.00001)
+}
+
+func TestCofactorOf3x3Matrix(t *testing.T) {
+	matrix := NewMatrix(3, 3, 3, 5, 0, 2, -1, -7, 6, -1, 5)
+
+	assert.InDelta(t, -12, matrix.Minor(0, 0), 0.00001)
+	assert.InDelta(t, -12, matrix.Cofactor(0, 0), 0.00001)
+	assert.InDelta(t, 25, matrix.Minor(1, 0), 0.00001)
+	assert.InDelta(t, -25, matrix.Cofactor(1, 0), 0.00001)
+}
+
+func TestDeterminantOf3x3Matrix(t *testing.T) {
+	matrix := NewMatrix(3, 3, 1, 2, 6, -5, 8, -4, 2, 6, 4)
+
+	assert.InDelta(t, 56, matrix.Cofactor(0, 0), 0.00001)
+	assert.InDelta(t, 12, matrix.Cofactor(0, 1), 0.00001)
+	assert.InDelta(t, -46, matrix.Cofactor(0, 2), 0.00001)
+	assert.InDelta(t, -196, matrix.Determinant(), 0.00001)
+}
+
+func TestDeterminantOf4x4Matrix(t *testing.T) {
+	matrix := NewMatrix(4, 4, -2, -8, 3, 5, -3, 1, 7, 3, 1, 2, -9, 6, -6, 7, 7, -9)
+
+	assert.InDelta(t, 690, matrix.Cofactor(0, 0), 0.00001)
+	assert.InDelta(t, 447, matrix.Cofactor(0, 1), 0.00001)
+	assert.InDelta(t, 210, matrix.Cofactor(0, 2), 0.00001)
+	assert.InDelta(t, 51, matrix.Cofactor(0, 3), 0.00001)
+	assert.InDelta(t, -4071, matrix.Determinant(), 0.00001)
 }
