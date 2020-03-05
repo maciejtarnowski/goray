@@ -211,3 +211,12 @@ func TestInvertingMatrices(t *testing.T) {
 		assert.True(t, tt.matrix.Invert().Equals(tt.expected))
 	}
 }
+
+func TestMultiplyingByInverse(t *testing.T) {
+	matrix1 := NewMatrix(4, 4, 3, -9, 7, 3, 3, -8, 2, -9, -4, 4, 4, 1, -6, 5, -1, 1)
+	matrix2 := NewMatrix(4, 4, 8, 2, 2, 2, 3, -1, 7, 0, 7, 0, 5, 4, 6, -2, 0, 5)
+
+	product := matrix1.MultiplyMatrix(matrix2)
+
+	assert.True(t, product.MultiplyMatrix(matrix2.Invert()).Equals(matrix1))
+}
