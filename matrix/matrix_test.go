@@ -162,3 +162,32 @@ func TestDeterminantOf4x4Matrix(t *testing.T) {
 	assert.InDelta(t, 51, matrix.Cofactor(0, 3), 0.00001)
 	assert.InDelta(t, -4071, matrix.Determinant(), 0.00001)
 }
+
+func TestInvertibleMatrixIsInvertible(t *testing.T) {
+	matrix := NewMatrix(4, 4, 6, 4, 4, 4, 5, 5, 7, 6, 4, -9, 3, -7, 9, 1, 7, -6)
+
+	assert.InDelta(t, -2120, matrix.Determinant(), 0.00001)
+	assert.True(t, matrix.IsInvertible())
+}
+
+func TestNonInvertibleMatrixIsNotInvertible(t *testing.T) {
+	matrix := NewMatrix(4, 4, -4, 2, -2, 3, 9, 6, 2, 6, 0, -5, 1, -5, 0, 0, 0, 0)
+
+	assert.InDelta(t, 0, matrix.Determinant(), 0.00001)
+	assert.False(t, matrix.IsInvertible())
+}
+
+func TestInvertingMatrix(t *testing.T) {
+	matrix := NewMatrix(4, 4, -5, 2, 6, -8, 1, -5, 1, 8, 7, 7, -6, -7, 1, -3, 7, 4)
+
+	expected := NewMatrix(4, 4, 0.21805, 0.45113, 0.24060, -0.04511, -0.80827, -1.45677, -0.44361, 0.52068, -0.07895, -0.22368, -0.05263, 0.19737, -0.52256, -0.81391, -0.30075, 0.30639)
+
+	inverted := matrix.Invert()
+
+	assert.InDelta(t, 532, matrix.Determinant(), 0.00001)
+	assert.InDelta(t, -160, matrix.Cofactor(2, 3), 0.00001)
+	assert.InDelta(t, float64(-160)/float64(532), inverted.At(3, 2), 0.00001)
+	assert.InDelta(t, 105, matrix.Cofactor(3, 2), 0.00001)
+	assert.InDelta(t, float64(105)/float64(532), inverted.At(2, 3), 0.00001)
+	assert.True(t, inverted.Equals(expected))
+}

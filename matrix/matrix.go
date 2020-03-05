@@ -119,10 +119,33 @@ func (m *Matrix) Minor(row, column int) float64 {
 func (m *Matrix) Cofactor(row, column int) float64 {
 	minor := m.Minor(row, column)
 
-	if row+column%2 == 0 {
+	if (row+column)%2 == 0 {
 		return minor
 	}
 	return -minor
+}
+
+func (m *Matrix) IsInvertible() bool {
+	return !utils.Compare(m.Determinant(), 0)
+}
+
+func (m *Matrix) Invert() *Matrix {
+	if !m.IsInvertible() {
+		panic("trying to invert non-invertible matrix")
+	}
+
+	inverseElements := make([]float64, m.Cols*m.Rows)
+	det := m.Determinant()
+
+	for row := 0; row < m.Rows; row++ {
+		for col := 0; col < m.Cols; col++ {
+			c := m.Cofactor(row, col)
+
+			inverseElements[calcIndex(m.Cols, col, row)] = c / det
+		}
+	}
+
+	return NewMatrix(m.Rows, m.Cols, inverseElements...)
 }
 
 func NewMatrix(rows, cols int, elements ...float64) *Matrix {
