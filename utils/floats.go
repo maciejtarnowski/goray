@@ -20,3 +20,7 @@ func Float64ToUint(value float64, maxInt int) int {
 
 	return product
 }
+
+func Degrees2Radians(deg float64) float64 {
+	return (deg / float64(180)) * math.Pi
+}

@@ -19,6 +19,10 @@ func (m *Matrix) At(row, col int) float64 {
 	return m.Elements[calcIndex(m.Cols, row, col)]
 }
 
+func (m *Matrix) Set(row, col int, value float64) {
+	m.Elements[calcIndex(m.Cols, row, col)] = value
+}
+
 func (m *Matrix) Equals(other *Matrix) bool {
 	if m.Rows != other.Rows || m.Cols != other.Cols || len(m.Elements) != len(other.Elements) {
 		return false
