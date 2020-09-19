@@ -24,7 +24,7 @@ func (r *Ray) Transform(m *matrix.Matrix) *Ray {
 }
 
 type Intersection struct {
-	T float64
+	T      float64
 	Object interface{}
 }
 

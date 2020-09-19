@@ -24,7 +24,7 @@ func (s *Sphere) Intersect(r *ray.Ray) ray.Intersections {
 	b := 2 * r2.Direction.Dot(sphereToRay)
 	c := sphereToRay.Dot(sphereToRay) - 1
 
-	discriminant := (b*b) - 4 * a * c
+	discriminant := (b * b) - 4*a*c
 
 	if discriminant < 0 {
 		return *ray.NewIntersections()
