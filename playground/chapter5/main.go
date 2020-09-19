@@ -6,6 +6,7 @@ import (
 	"goray/color"
 	"goray/ray"
 	"goray/shape"
+	"goray/transformation"
 	"goray/tuple"
 )
 
@@ -25,6 +26,11 @@ func main() {
 	canvs := canvas.NewCanvas(CANVAS_PIXELS, CANVAS_PIXELS)
 	red := color.NewColor(1, 0, 0)
 	s := shape.NewSphere()
+
+	// s.Transformation = transformation.NewScaling(1, 0.5, 1) // shrink along Y axis
+	// s.Transformation = transformation.NewScaling(0.5, 1, 1) // shrink along X axis
+	// s.Transformation = transformation.NewRotationZ(math.Pi / 4).MultiplyMatrix(transformation.NewScaling(0.5, 1, 1)) // shrink and rotate
+	s.Transformation = transformation.NewShearing(1, 0, 0, 0, 0, 0).MultiplyMatrix(transformation.NewScaling(0.5, 1, 1)) // shrink and skew
 
 	for y := 0; y < CANVAS_PIXELS; y++ {
 		worldY := HALF_WALL - PIXEL_SIZE*float64(y)
