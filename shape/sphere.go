@@ -39,3 +39,14 @@ func (s *Sphere) Intersect(r *ray.Ray) ray.Intersections {
 
 	return *xs
 }
+
+func (s *Sphere) NormalAt(point *tuple.Tuple) *tuple.Tuple {
+	objectPoint := s.Transformation.Invert().MultiplyTuple(point)
+
+	objectNormal := objectPoint.Sub(tuple.NewPoint(0, 0, 0))
+
+	worldNormal := s.Transformation.Invert().Transpose().MultiplyTuple(objectNormal)
+	worldNormal.W = 0
+
+	return worldNormal.Normalize()
+}

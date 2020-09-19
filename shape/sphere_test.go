@@ -7,6 +7,7 @@ import (
 	"goray/ray"
 	"goray/transformation"
 	"goray/tuple"
+	"math"
 	"testing"
 )
 
@@ -110,4 +111,62 @@ func TestIntersectingTranslatedSphere(t *testing.T) {
 	xs := s.Intersect(r)
 
 	assert.Equal(t, 0, xs.Len())
+}
+
+func TestNormalAtPointOnXAxis(t *testing.T) {
+	s := NewSphere()
+
+	n := s.NormalAt(tuple.NewPoint(1, 0, 0))
+
+	assert.Equal(t, tuple.NewVector(1, 0, 0), n)
+}
+
+func TestNormalAtPointOnYAxis(t *testing.T) {
+	s := NewSphere()
+
+	n := s.NormalAt(tuple.NewPoint(0, 1, 0))
+
+	assert.Equal(t, tuple.NewVector(0, 1, 0), n)
+}
+
+func TestNormalAtPointOnZAxis(t *testing.T) {
+	s := NewSphere()
+
+	n := s.NormalAt(tuple.NewPoint(0, 0, 1))
+
+	assert.Equal(t, tuple.NewVector(0, 0, 1), n)
+}
+
+func TestNormalAtPointOnNonAxialPoint(t *testing.T) {
+	s := NewSphere()
+
+	n := s.NormalAt(tuple.NewPoint(math.Sqrt(3)/3, math.Sqrt(3)/3, math.Sqrt(3)/3))
+
+	assert.Equal(t, tuple.NewVector(math.Sqrt(3)/3, math.Sqrt(3)/3, math.Sqrt(3)/3), n)
+}
+
+func TestNormalIsNormalized(t *testing.T) {
+	s := NewSphere()
+
+	n := s.NormalAt(tuple.NewPoint(math.Sqrt(3)/3, math.Sqrt(3)/3, math.Sqrt(3)/3))
+
+	assert.Equal(t, n.Normalize(), n)
+}
+
+func TestNormalOnTranslatedSphere(t *testing.T) {
+	s := NewSphere()
+	s.Transformation = transformation.NewTranslation(0, 1, 0)
+
+	n := s.NormalAt(tuple.NewPoint(0, 1.70711, -0.70711))
+
+	assert.True(t, tuple.NewVector(0, 0.70711, -0.70711).Equals(n))
+}
+
+func TestNormalOnTransformedSphere(t *testing.T) {
+	s := NewSphere()
+	s.Transformation = transformation.NewScaling(1, 0.5, 1).MultiplyMatrix(transformation.NewRotationZ(math.Pi / 5))
+
+	n := s.NormalAt(tuple.NewPoint(0, math.Sqrt(2)/2, -math.Sqrt(2)/2))
+
+	assert.True(t, tuple.NewVector(0, 0.97014, -0.24254).Equals(n))
 }
