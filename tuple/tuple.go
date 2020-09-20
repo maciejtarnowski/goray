@@ -102,6 +102,10 @@ func (t *Tuple) Cross(other *Tuple) *Tuple {
 	)
 }
 
+func (t *Tuple) Reflect(normal *Tuple) *Tuple {
+	return t.Sub(normal.Multiply(2).Multiply(t.Dot(normal)))
+}
+
 func NewTuple(x, y, z, w float64) *Tuple {
 	return &Tuple{X: x, Y: y, Z: z, W: w}
 }

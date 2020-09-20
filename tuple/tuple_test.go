@@ -190,3 +190,21 @@ func TestCrossProduct(t *testing.T) {
 	require.True(t, vector1.Cross(vector2).Equals(expected1))
 	require.True(t, vector2.Cross(vector1).Equals(expected2))
 }
+
+func TestReflectVectorAt45Degrees(t *testing.T) {
+	v := NewVector(1, -1, 0)
+	n := NewVector(0, 1, 0)
+
+	r := v.Reflect(n)
+
+	assert.True(t, r.Equals(NewVector(1, 1, 0)))
+}
+
+func TestReflectVectorOffSlantedSurface(t *testing.T) {
+	v := NewVector(0, -1, 0)
+	n := NewVector(math.Sqrt(2)/2, math.Sqrt(2)/2, 0)
+
+	r := v.Reflect(n)
+
+	assert.True(t, r.Equals(NewVector(1, 0, 0)))
+}
