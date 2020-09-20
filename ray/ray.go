@@ -48,12 +48,24 @@ func (is *Intersections) Len() int {
 	return len(is.elements)
 }
 
+func (is *Intersections) Swap(i, j int) {
+	is.elements[i], is.elements[j] = is.elements[j], is.elements[i]
+}
+
+func (is *Intersections) Less(i, j int) bool {
+	return is.ValueAt(i) < is.ValueAt(j)
+}
+
 func (is *Intersections) ValueAt(index int) float64 {
 	return is.elements[index].T
 }
 
 func (is *Intersections) Get(index int) *Intersection {
 	return is.elements[index]
+}
+
+func (is *Intersections) GetAll() []*Intersection {
+	return is.elements
 }
 
 func (is *Intersections) ObjectAt(index int) Object {
