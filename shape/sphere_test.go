@@ -3,6 +3,7 @@ package shape
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"goray/material"
 	"goray/matrix"
 	"goray/ray"
 	"goray/transformation"
@@ -169,4 +170,20 @@ func TestNormalOnTransformedSphere(t *testing.T) {
 	n := s.NormalAt(tuple.NewPoint(0, math.Sqrt(2)/2, -math.Sqrt(2)/2))
 
 	assert.True(t, tuple.NewVector(0, 0.97014, -0.24254).Equals(n))
+}
+
+func TestSphereHasDefaultMaterial(t *testing.T) {
+	s := NewSphere()
+
+	assert.Equal(t, material.NewMaterial(), s.Material)
+}
+
+func TestChangingSphereMaterial(t *testing.T) {
+	s := NewSphere()
+	m := material.NewMaterial()
+	m.Ambient = 1
+
+	s.Material = m
+
+	assert.Equal(t, m, s.Material)
 }

@@ -1,6 +1,7 @@
 package shape
 
 import (
+	"goray/material"
 	"goray/matrix"
 	"goray/ray"
 	"goray/tuple"
@@ -9,10 +10,11 @@ import (
 
 type Sphere struct {
 	Transformation *matrix.Matrix
+	Material       *material.Material
 }
 
 func NewSphere() *Sphere {
-	return &Sphere{Transformation: matrix.NewIdentityMatrix4x4()}
+	return &Sphere{Transformation: matrix.NewIdentityMatrix4x4(), Material: material.NewMaterial()}
 }
 
 func (s *Sphere) Intersect(r *ray.Ray) ray.Intersections {
