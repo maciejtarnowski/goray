@@ -25,10 +25,10 @@ func (r *Ray) Transform(m *matrix.Matrix) *Ray {
 
 type Intersection struct {
 	T      float64
-	Object interface{}
+	Object Object
 }
 
-func NewIntersection(t float64, o interface{}) *Intersection {
+func NewIntersection(t float64, o Object) *Intersection {
 	return &Intersection{T: t, Object: o}
 }
 
@@ -56,7 +56,7 @@ func (is *Intersections) Get(index int) *Intersection {
 	return is.elements[index]
 }
 
-func (is *Intersections) ObjectAt(index int) interface{} {
+func (is *Intersections) ObjectAt(index int) Object {
 	return is.Get(index).Object
 }
 

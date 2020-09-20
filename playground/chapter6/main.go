@@ -32,12 +32,12 @@ func main() {
 	l := light.NewPointLight(lightPosition, lightColor)
 
 	s := shape.NewSphere()
-	s.Material.Color = color.NewColor(1, 0.2, 1)
+	s.GetMaterial().Color = color.NewColor(1, 0.2, 1)
 
-	// s.Transformation = transformation.NewScaling(1, 0.5, 1) // shrink along Y axis
-	// s.Transformation = transformation.NewScaling(0.5, 1, 1) // shrink along X axis
-	s.Transformation = transformation.NewRotationZ(math.Pi / 4).MultiplyMatrix(transformation.NewScaling(0.5, 1, 1)) // shrink and rotate
-	// s.Transformation = transformation.NewShearing(1, 0, 0, 0, 0, 0).MultiplyMatrix(transformation.NewScaling(0.5, 1, 1)) // shrink and skew
+	// s.SetTransformation(transformation.NewScaling(1, 0.5, 1)) // shrink along Y axis
+	// s.SetTransformation(transformation.NewScaling(0.5, 1, 1)) // shrink along X axis
+	s.SetTransformation(transformation.NewRotationZ(math.Pi / 4).MultiplyMatrix(transformation.NewScaling(0.5, 1, 1))) // shrink and rotate
+	// s.SetTransformation(transformation.NewShearing(1, 0, 0, 0, 0, 0).MultiplyMatrix(transformation.NewScaling(0.5, 1, 1))) // shrink and skew
 
 	for y := 0; y < CANVAS_PIXELS; y++ {
 		worldY := HALF_WALL - PIXEL_SIZE*float64(y)
@@ -55,10 +55,10 @@ func main() {
 				hit := xs.Hit()
 
 				p := r.Position(hit.T)
-				normal := hit.Object.(*shape.Sphere).NormalAt(p)
+				normal := hit.Object.NormalAt(p)
 				eye := r.Direction.Negate()
 
-				c := hit.Object.(*shape.Sphere).Material.Lighting(l, p, eye, normal)
+				c := hit.Object.GetMaterial().Lighting(l, p, eye, normal)
 
 				canvs.WriteAt(x, y, c)
 			}

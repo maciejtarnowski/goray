@@ -9,16 +9,28 @@ import (
 )
 
 type Sphere struct {
-	Transformation *matrix.Matrix
-	Material       *material.Material
+	transformation *matrix.Matrix
+	material       *material.Material
 }
 
 func NewSphere() *Sphere {
-	return &Sphere{Transformation: matrix.NewIdentityMatrix4x4(), Material: material.NewMaterial()}
+	return &Sphere{transformation: matrix.NewIdentityMatrix4x4(), material: material.NewMaterial()}
+}
+
+func (s *Sphere) SetMaterial(m *material.Material) {
+	s.material = m
+}
+
+func (s *Sphere) GetMaterial() *material.Material {
+	return s.material
+}
+
+func (s *Sphere) SetTransformation(m *matrix.Matrix) {
+	s.transformation = m
 }
 
 func (s *Sphere) Intersect(r *ray.Ray) ray.Intersections {
-	r2 := r.Transform(s.Transformation.Invert())
+	r2 := r.Transform(s.transformation.Invert())
 
 	sphereToRay := r2.Origin.Sub(tuple.NewPoint(0, 0, 0))
 
@@ -43,11 +55,11 @@ func (s *Sphere) Intersect(r *ray.Ray) ray.Intersections {
 }
 
 func (s *Sphere) NormalAt(point *tuple.Tuple) *tuple.Tuple {
-	objectPoint := s.Transformation.Invert().MultiplyTuple(point)
+	objectPoint := s.transformation.Invert().MultiplyTuple(point)
 
 	objectNormal := objectPoint.Sub(tuple.NewPoint(0, 0, 0))
 
-	worldNormal := s.Transformation.Invert().Transpose().MultiplyTuple(objectNormal)
+	worldNormal := s.transformation.Invert().Transpose().MultiplyTuple(objectNormal)
 	worldNormal.W = 0
 
 	return worldNormal.Normalize()

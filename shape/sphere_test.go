@@ -79,22 +79,22 @@ func TestIntersectSetsObjectInIntersection(t *testing.T) {
 func TestSphereHasDefaultTransformation(t *testing.T) {
 	s := NewSphere()
 
-	assert.Equal(t, matrix.NewIdentityMatrix4x4(), s.Transformation)
+	assert.Equal(t, matrix.NewIdentityMatrix4x4(), s.transformation)
 }
 
 func TestChangingSphereTransformation(t *testing.T) {
 	s := NewSphere()
 	tr := transformation.NewTranslation(2, 3, 4)
 
-	s.Transformation = tr
+	s.transformation = tr
 
-	assert.Equal(t, tr, s.Transformation)
+	assert.Equal(t, tr, s.transformation)
 }
 
 func TestIntersectingScaledSphere(t *testing.T) {
 	r := ray.NewRay(tuple.NewPoint(0, 0, -5), tuple.NewVector(0, 0, 1))
 	s := NewSphere()
-	s.Transformation = transformation.NewScaling(2, 2, 2)
+	s.transformation = transformation.NewScaling(2, 2, 2)
 
 	xs := s.Intersect(r)
 
@@ -107,7 +107,7 @@ func TestIntersectingScaledSphere(t *testing.T) {
 func TestIntersectingTranslatedSphere(t *testing.T) {
 	r := ray.NewRay(tuple.NewPoint(0, 0, -5), tuple.NewVector(0, 0, 1))
 	s := NewSphere()
-	s.Transformation = transformation.NewTranslation(5, 0, 0)
+	s.transformation = transformation.NewTranslation(5, 0, 0)
 
 	xs := s.Intersect(r)
 
@@ -156,7 +156,7 @@ func TestNormalIsNormalized(t *testing.T) {
 
 func TestNormalOnTranslatedSphere(t *testing.T) {
 	s := NewSphere()
-	s.Transformation = transformation.NewTranslation(0, 1, 0)
+	s.transformation = transformation.NewTranslation(0, 1, 0)
 
 	n := s.NormalAt(tuple.NewPoint(0, 1.70711, -0.70711))
 
@@ -165,7 +165,7 @@ func TestNormalOnTranslatedSphere(t *testing.T) {
 
 func TestNormalOnTransformedSphere(t *testing.T) {
 	s := NewSphere()
-	s.Transformation = transformation.NewScaling(1, 0.5, 1).MultiplyMatrix(transformation.NewRotationZ(math.Pi / 5))
+	s.transformation = transformation.NewScaling(1, 0.5, 1).MultiplyMatrix(transformation.NewRotationZ(math.Pi / 5))
 
 	n := s.NormalAt(tuple.NewPoint(0, math.Sqrt(2)/2, -math.Sqrt(2)/2))
 
@@ -175,7 +175,7 @@ func TestNormalOnTransformedSphere(t *testing.T) {
 func TestSphereHasDefaultMaterial(t *testing.T) {
 	s := NewSphere()
 
-	assert.Equal(t, material.NewMaterial(), s.Material)
+	assert.Equal(t, material.NewMaterial(), s.material)
 }
 
 func TestChangingSphereMaterial(t *testing.T) {
@@ -183,7 +183,7 @@ func TestChangingSphereMaterial(t *testing.T) {
 	m := material.NewMaterial()
 	m.Ambient = 1
 
-	s.Material = m
+	s.material = m
 
-	assert.Equal(t, m, s.Material)
+	assert.Equal(t, m, s.material)
 }
