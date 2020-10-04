@@ -3,6 +3,7 @@ package shape
 import (
 	"github.com/stretchr/testify/assert"
 	"goray/ray"
+	"goray/tuple"
 	"testing"
 )
 
@@ -76,4 +77,41 @@ func TestHitIsLowestNonNegativeT(t *testing.T) {
 	xs := ray.NewIntersections(i1, i2, i3, i4)
 
 	assert.Equal(t, i4, xs.Hit())
+}
+
+func TestPrecomputingStateOfIntersection(t *testing.T) {
+	r := ray.NewRay(tuple.NewPoint(0, 0, -5), tuple.NewVector(0, 0, 1))
+	s := NewSphere()
+	i := ray.NewIntersection(4, s)
+
+	comps := i.PrepareComputations(r)
+
+	assert.Equal(t, i.T, comps.T)
+	assert.Equal(t, i.Object, comps.Object)
+	assert.True(t, tuple.NewPoint(0, 0, -1).Equals(comps.Point))
+	assert.True(t, tuple.NewVector(0, 0, -1).Equals(comps.EyeV))
+	assert.True(t, tuple.NewVector(0, 0, -1).Equals(comps.NormalV))
+}
+
+func TestHitWithIntersectionOnTheOutside(t *testing.T) {
+	r := ray.NewRay(tuple.NewPoint(0, 0, -5), tuple.NewVector(0, 0, 1))
+	s := NewSphere()
+	i := ray.NewIntersection(4, s)
+
+	comps := i.PrepareComputations(r)
+
+	assert.False(t, comps.Inside)
+}
+
+func TestHitWithIntersectionOnTheInside(t *testing.T) {
+	r := ray.NewRay(tuple.NewPoint(0, 0, 0), tuple.NewVector(0, 0, 1))
+	s := NewSphere()
+	i := ray.NewIntersection(1, s)
+
+	comps := i.PrepareComputations(r)
+
+	assert.True(t, tuple.NewPoint(0, 0, 1).Equals(comps.Point))
+	assert.True(t, tuple.NewVector(0, 0, -1).Equals(comps.EyeV))
+	assert.True(t, comps.Inside)
+	assert.True(t, tuple.NewVector(0, 0, -1).Equals(comps.NormalV))
 }
