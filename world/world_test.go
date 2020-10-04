@@ -73,3 +73,34 @@ func TestShadingIntersectionFromTheInside(t *testing.T) {
 
 	assert.True(t, color.NewColor(0.90498, 0.90498, 0.90498).Equals(c))
 }
+
+func TestColorWhenRayMisses(t *testing.T) {
+	w := NewDefaultWorld()
+	r := ray.NewRay(tuple.NewPoint(0, 0, -5), tuple.NewVector(0, 1, 0))
+
+	c := w.ColorAt(r)
+
+	assert.True(t, color.NewColor(0, 0, 0).Equals(c))
+}
+
+func TestColorWhenRayHits(t *testing.T) {
+	w := NewDefaultWorld()
+	r := ray.NewRay(tuple.NewPoint(0, 0, -5), tuple.NewVector(0, 0, 1))
+
+	c := w.ColorAt(r)
+
+	assert.True(t, color.NewColor(0.38066, 0.47583, 0.2855).Equals(c))
+}
+
+func TestColorWithIntersectionBehindRay(t *testing.T) {
+	w := NewDefaultWorld()
+	outer := w.Objects[0]
+	outer.GetMaterial().Ambient = 1
+	inner := w.Objects[1]
+	inner.GetMaterial().Ambient = 1
+	r := ray.NewRay(tuple.NewPoint(0, 0, 0.75), tuple.NewVector(0, 0, -1))
+
+	c := w.ColorAt(r)
+
+	assert.True(t, inner.GetMaterial().Color.Equals(c))
+}

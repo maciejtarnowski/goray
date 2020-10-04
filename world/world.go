@@ -55,3 +55,15 @@ func (w *World) Intersect(r *ray.Ray) *ray.Intersections {
 func (w *World) ShadeHit(comps *ray.Computation) *color.Color {
 	return comps.Object.GetMaterial().Lighting(w.Light, comps.Point, comps.EyeV, comps.NormalV)
 }
+
+func (w *World) ColorAt(r *ray.Ray) *color.Color {
+	xs := w.Intersect(r)
+
+	if xs.Hit() == nil {
+		return color.NewColor(0, 0, 0)
+	}
+
+	comps := xs.Hit().PrepareComputations(r)
+
+	return w.ShadeHit(comps)
+}
