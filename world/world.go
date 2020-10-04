@@ -16,21 +16,6 @@ type World struct {
 	Objects []ray.Object
 }
 
-func (w *World) Intersect(r *ray.Ray) *ray.Intersections {
-	var worldXs []*ray.Intersection
-	for _, obj := range w.Objects {
-		objXs := obj.Intersect(r)
-		for _, objX := range objXs.GetAll() {
-			worldXs = append(worldXs, objX)
-		}
-	}
-
-	xs := ray.NewIntersections(worldXs...)
-	sort.Sort(xs)
-
-	return xs
-}
-
 func NewWorld() *World {
 	return &World{}
 }
@@ -50,4 +35,23 @@ func NewDefaultWorld() *World {
 		Light:   light.NewPointLight(tuple.NewPoint(-10, 10, -10), color.NewColor(1, 1, 1)),
 		Objects: []ray.Object{s1, s2},
 	}
+}
+
+func (w *World) Intersect(r *ray.Ray) *ray.Intersections {
+	var worldXs []*ray.Intersection
+	for _, obj := range w.Objects {
+		objXs := obj.Intersect(r)
+		for _, objX := range objXs.GetAll() {
+			worldXs = append(worldXs, objX)
+		}
+	}
+
+	xs := ray.NewIntersections(worldXs...)
+	sort.Sort(xs)
+
+	return xs
+}
+
+func (w *World) ShadeHit(comps *ray.Computation) *color.Color {
+	return comps.Object.GetMaterial().Lighting(w.Light, comps.Point, comps.EyeV, comps.NormalV)
 }
