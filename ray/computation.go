@@ -3,12 +3,12 @@ package ray
 import "goray/tuple"
 
 type Computation struct {
-	T float64
-	Object Object
-	Point *tuple.Tuple
-	EyeV *tuple.Tuple
+	T       float64
+	Object  Object
+	Point   *tuple.Tuple
+	EyeV    *tuple.Tuple
 	NormalV *tuple.Tuple
-	Inside bool
+	Inside  bool
 }
 
 func (i *Intersection) PrepareComputations(r *Ray) *Computation {
