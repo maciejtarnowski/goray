@@ -104,3 +104,47 @@ func TestColorWithIntersectionBehindRay(t *testing.T) {
 
 	assert.True(t, inner.GetMaterial().Color.Equals(c))
 }
+
+func TestNoShadowWhenNothingIsCollinearWithPointAndLight(t *testing.T) {
+	w := NewDefaultWorld()
+	p := tuple.NewPoint(0, 10, 0)
+
+	assert.False(t, w.IsShadowed(p))
+}
+
+func TestShadowWhenObjectIsBetweenPointAndLight(t *testing.T) {
+	w := NewDefaultWorld()
+	p := tuple.NewPoint(10, -10, 10)
+
+	assert.True(t, w.IsShadowed(p))
+}
+
+func TestNoShadowWhenObjectIsBehindLight(t *testing.T) {
+	w := NewDefaultWorld()
+	p := tuple.NewPoint(-20, 20, -20)
+
+	assert.False(t, w.IsShadowed(p))
+}
+
+func TestNoShadowWhenObjectIsBehindPoint(t *testing.T) {
+	w := NewDefaultWorld()
+	p := tuple.NewPoint(-2, 2, -2)
+
+	assert.False(t, w.IsShadowed(p))
+}
+
+func TestShadingIntersectionInShadow(t *testing.T) {
+	w := NewWorld()
+	w.Light = light.NewPointLight(tuple.NewPoint(0, 0, -10), color.NewColor(1, 1, 1))
+	s1 := shape.NewSphere()
+	s2 := shape.NewSphere()
+	s2.SetTransformation(transformation.NewTranslation(0, 0, 10))
+	w.Objects = []ray.Object{s1, s2}
+	r := ray.NewRay(tuple.NewPoint(0, 0, 5), tuple.NewVector(0, 0, 1))
+	i := ray.NewIntersection(4, s2)
+
+	comps := i.PrepareComputations(r)
+	c := w.ShadeHit(comps)
+
+	assert.True(t, c.Equals(color.NewColor(0.1, 0.1, 0.1)))
+}

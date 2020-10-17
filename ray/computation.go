@@ -1,14 +1,18 @@
 package ray
 
-import "goray/tuple"
+import (
+	"goray/tuple"
+	"goray/utils"
+)
 
 type Computation struct {
-	T       float64
-	Object  Object
-	Point   *tuple.Tuple
-	EyeV    *tuple.Tuple
-	NormalV *tuple.Tuple
-	Inside  bool
+	T         float64
+	Object    Object
+	Point     *tuple.Tuple
+	EyeV      *tuple.Tuple
+	NormalV   *tuple.Tuple
+	Inside    bool
+	OverPoint *tuple.Tuple
 }
 
 func (i *Intersection) PrepareComputations(r *Ray) *Computation {
@@ -26,6 +30,8 @@ func (i *Intersection) PrepareComputations(r *Ray) *Computation {
 	} else {
 		c.Inside = false
 	}
+
+	c.OverPoint = c.Point.Add(c.NormalV.Multiply(utils.EPSILON))
 
 	return c
 }

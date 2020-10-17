@@ -27,7 +27,7 @@ func TestLightingWithEyeBetweenLightAndSurface(t *testing.T) {
 	normalV := tuple.NewVector(0, 0, -1)
 	l := light.NewPointLight(tuple.NewPoint(0, 0, -10), color.NewColor(1, 1, 1))
 
-	result := m.Lighting(l, position, eyeV, normalV)
+	result := m.Lighting(l, position, eyeV, normalV, false)
 
 	assert.Equal(t, color.NewColor(1.9, 1.9, 1.9), result)
 }
@@ -40,7 +40,7 @@ func TestLightingWithEyeBetweenLightAndSurfaceWithEyeOffset45Degrees(t *testing.
 	normalV := tuple.NewVector(0, 0, -1)
 	l := light.NewPointLight(tuple.NewPoint(0, 0, -10), color.NewColor(1, 1, 1))
 
-	result := m.Lighting(l, position, eyeV, normalV)
+	result := m.Lighting(l, position, eyeV, normalV, false)
 
 	assert.Equal(t, color.NewColor(1.0, 1.0, 1.0), result)
 }
@@ -53,7 +53,7 @@ func TestLightingWithEyeOppositeSurfaceWithLightOffset45Degrees(t *testing.T) {
 	normalV := tuple.NewVector(0, 0, -1)
 	l := light.NewPointLight(tuple.NewPoint(0, 10, -10), color.NewColor(1, 1, 1))
 
-	result := m.Lighting(l, position, eyeV, normalV)
+	result := m.Lighting(l, position, eyeV, normalV, false)
 
 	assert.True(t, result.Equals(color.NewColor(0.7364, 0.7364, 0.7364)))
 }
@@ -66,7 +66,7 @@ func TestLightingWithEyeInPathOfReflectionVector(t *testing.T) {
 	normalV := tuple.NewVector(0, 0, -1)
 	l := light.NewPointLight(tuple.NewPoint(0, 10, -10), color.NewColor(1, 1, 1))
 
-	result := m.Lighting(l, position, eyeV, normalV)
+	result := m.Lighting(l, position, eyeV, normalV, false)
 
 	assert.True(t, result.Equals(color.NewColor(1.6364, 1.6364, 1.6364)))
 }
@@ -79,7 +79,21 @@ func TestLightingWithLightBehindSurface(t *testing.T) {
 	normalV := tuple.NewVector(0, 0, -1)
 	l := light.NewPointLight(tuple.NewPoint(0, 0, 10), color.NewColor(1, 1, 1))
 
-	result := m.Lighting(l, position, eyeV, normalV)
+	result := m.Lighting(l, position, eyeV, normalV, false)
 
 	assert.True(t, result.Equals(color.NewColor(0.1, 0.1, 0.1)))
+}
+
+func TestLightingWithSurfaceInShadow(t *testing.T) {
+	m := NewMaterial()
+	position := tuple.NewPoint(0, 0, 0)
+
+	eyeV := tuple.NewVector(0, 0, -1)
+	normalV := tuple.NewVector(0, 0, -1)
+	l := light.NewPointLight(tuple.NewPoint(0, 0, -10), color.NewColor(1, 1, 1))
+	inShadow := true
+
+	result := m.Lighting(l, position, eyeV, normalV, inShadow)
+
+	assert.Equal(t, color.NewColor(0.1, 0.1, 0.1), result)
 }

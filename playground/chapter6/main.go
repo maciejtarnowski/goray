@@ -58,7 +58,7 @@ func main() {
 				normal := hit.Object.NormalAt(p)
 				eye := r.Direction.Negate()
 
-				c := hit.Object.GetMaterial().Lighting(l, p, eye, normal)
+				c := hit.Object.GetMaterial().Lighting(l, p, eye, normal, false)
 
 				canvs.WriteAt(x, y, c)
 			}

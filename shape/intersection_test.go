@@ -3,7 +3,9 @@ package shape
 import (
 	"github.com/stretchr/testify/assert"
 	"goray/ray"
+	"goray/transformation"
 	"goray/tuple"
+	"goray/utils"
 	"testing"
 )
 
@@ -114,4 +116,17 @@ func TestHitWithIntersectionOnTheInside(t *testing.T) {
 	assert.True(t, tuple.NewVector(0, 0, -1).Equals(comps.EyeV))
 	assert.True(t, comps.Inside)
 	assert.True(t, tuple.NewVector(0, 0, -1).Equals(comps.NormalV))
+}
+
+func TestHitShouldOffsetThePoint(t *testing.T) {
+	r := ray.NewRay(tuple.NewPoint(0, 0, -5), tuple.NewVector(0, 0, 1))
+	s := NewSphere()
+	s.SetTransformation(transformation.NewTranslation(0, 0, 1))
+
+	i := ray.NewIntersection(5, s)
+
+	comps := i.PrepareComputations(r)
+
+	assert.Less(t, comps.OverPoint.Z, -utils.EPSILON/2)
+	assert.Greater(t, comps.Point.Z, comps.OverPoint.Z)
 }

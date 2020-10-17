@@ -19,7 +19,7 @@ func NewMaterial() *Material {
 	return &Material{Color: color.NewColor(1, 1, 1), Ambient: 0.1, Diffuse: 0.9, Specular: 0.9, Shininess: 200.0}
 }
 
-func (m *Material) Lighting(l *light.Light, point *tuple.Tuple, eyeV *tuple.Tuple, normalV *tuple.Tuple) *color.Color {
+func (m *Material) Lighting(l *light.Light, point *tuple.Tuple, eyeV *tuple.Tuple, normalV *tuple.Tuple, inShadow bool) *color.Color {
 	effectiveColor := m.Color.Multiply(l.Intensity)
 
 	lightV := l.Position.Sub(point).Normalize()
@@ -30,7 +30,7 @@ func (m *Material) Lighting(l *light.Light, point *tuple.Tuple, eyeV *tuple.Tupl
 
 	var diffuse *color.Color
 	var specular *color.Color
-	if lightDotNormal < 0 {
+	if lightDotNormal < 0 || inShadow {
 		diffuse = color.NewColor(0, 0, 0)
 		specular = color.NewColor(0, 0, 0)
 	} else {
