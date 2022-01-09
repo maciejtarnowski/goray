@@ -18,8 +18,8 @@ func NewTestShape() *Shape {
 	return NewShape(TestShape{})
 }
 
-func (ts TestShape) calculateIntersections(r *ray.Ray) (float64, float64, bool) {
-	return 0, 0, false
+func (ts TestShape) calculateIntersections(r *ray.Ray, s *Shape) ray.Intersections {
+	return ray.Intersections{}
 }
 
 func (ts TestShape) calculateNormalAt(point *tuple.Tuple) *tuple.Tuple {

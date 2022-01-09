@@ -12,7 +12,7 @@ func NewSphere() *Shape {
 	return NewShape(Sphere{})
 }
 
-func (s Sphere) calculateIntersections(r *ray.Ray) (float64, float64, bool) {
+func (sp Sphere) calculateIntersections(r *ray.Ray, s *Shape) ray.Intersections {
 	sphereToRay := r.Origin.Sub(tuple.NewPoint(0, 0, 0))
 
 	a := r.Direction.Dot(r.Direction)
@@ -22,15 +22,19 @@ func (s Sphere) calculateIntersections(r *ray.Ray) (float64, float64, bool) {
 	discriminant := (b * b) - 4*a*c
 
 	if discriminant < 0 {
-		return 0, 0, false
+		return ray.Intersections{}
 	}
 
 	t1 := (-b - math.Sqrt(discriminant)) / (2 * a)
 	t2 := (-b + math.Sqrt(discriminant)) / (2 * a)
 
-	return t1, t2, true
+	xs := ray.NewIntersections()
+	xs.Add(ray.NewIntersection(math.Min(t1, t2), s))
+	xs.Add(ray.NewIntersection(math.Max(t1, t2), s))
+
+	return *xs
 }
 
-func (s Sphere) calculateNormalAt(point *tuple.Tuple) *tuple.Tuple {
+func (sp Sphere) calculateNormalAt(point *tuple.Tuple) *tuple.Tuple {
 	return point.Sub(tuple.NewPoint(0, 0, 0))
 }

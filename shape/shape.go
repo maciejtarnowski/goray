@@ -5,11 +5,10 @@ import (
 	"goray/matrix"
 	"goray/ray"
 	"goray/tuple"
-	"math"
 )
 
 type shapeType interface {
-	calculateIntersections(r *ray.Ray) (float64, float64, bool)
+	calculateIntersections(r *ray.Ray, s *Shape) ray.Intersections
 	calculateNormalAt(point *tuple.Tuple) *tuple.Tuple
 }
 
@@ -46,17 +45,7 @@ func (s *Shape) GetTransformation() *matrix.Matrix {
 func (s *Shape) Intersect(r *ray.Ray) ray.Intersections {
 	objectRay := r.Transform(s.transformation.Invert())
 
-	t1, t2, found := s.shapeType.calculateIntersections(objectRay)
-
-	if !found {
-		return ray.Intersections{}
-	}
-
-	xs := ray.NewIntersections()
-	xs.Add(ray.NewIntersection(math.Min(t1, t2), s))
-	xs.Add(ray.NewIntersection(math.Max(t1, t2), s))
-
-	return *xs
+	return s.shapeType.calculateIntersections(objectRay, s)
 }
 
 func (s *Shape) NormalAt(point *tuple.Tuple) *tuple.Tuple {
